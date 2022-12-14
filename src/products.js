@@ -1,31 +1,13 @@
-import { useState } from "react";
-import { Container, Nav, Row, Col } from "react-bootstrap";
-import products from "./product-data";
-
-function Products() {
-  let [product, setProduct] = useState(products);
-
+function Products(props) {
   return (
     <div>
-      <div>
-        {product.map(function (a, i) {
-          return (
-            <div className="products">
-              <Container>
-                <Row>
-                  <Col>
-                    <div className="product-box">
-                      <img src={product[i].img} width="300px" height="300px" />
-                      <h4>{product[i].title}</h4>
-                      <p>{product[i].price}</p>
-                      <p>{product[i].content}</p>
-                    </div>
-                  </Col>
-                </Row>
-              </Container>
-            </div>
-          );
-        })}
+      <div className="products">
+        <div className="product-box">
+          <img src={props.product.img} width="250px" height="250px" />
+          <h4>{props.product.title}</h4>
+          <div>{props.product.price}</div>
+          <div>{props.product.content}</div>
+        </div>
       </div>
     </div>
   );

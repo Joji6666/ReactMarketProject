@@ -5,22 +5,100 @@ import { Button, Navbar, Container, Nav, Row, Col } from "react-bootstrap";
 import { useState } from "react";
 import Products from "./products";
 import products from "./product-data";
+import { Routes, Route, Link, useNavigate, Outlet } from "react-router-dom";
+import MainPage from "./main/main";
+import DetailPage from "./detail/detail";
 
 function App() {
+  let nav = useNavigate();
+  let [product, setProduct] = useState(products);
+
   return (
     <div className="App">
       <Navbar className="navbar">
         <Container>
-          <Navbar.Brand href="#home">JinsShop</Navbar.Brand>
+          <Navbar.Brand>
+            <Nav.Link
+              onClick={() => {
+                nav("/");
+              }}
+            >
+              JinsShop
+            </Nav.Link>
+          </Navbar.Brand>
           <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#features">Notices</Nav.Link>
-            <Nav.Link href="#pricing">Products</Nav.Link>
+            <Nav.Link
+              onClick={() => {
+                nav("/");
+              }}
+            >
+              Home
+            </Nav.Link>
+            <Nav.Link
+              onClick={() => {
+                nav("/about");
+              }}
+            >
+              About
+            </Nav.Link>
+            <Nav.Link
+              onClick={() => {
+                nav("/detail");
+              }}
+            >
+              Detail
+            </Nav.Link>
+            <Nav.Link
+              onClick={() => {
+                nav("/event");
+              }}
+            >
+              Events
+            </Nav.Link>
           </Nav>
         </Container>
       </Navbar>
-      <div className="main-bg"></div>
-      <Products />
+      <Routes>
+        <Route path="/" element={<MainPage products={products} />}></Route>
+        <Route path="/detail" element={<DetailPage />}></Route>
+        <Route path="/about" element={<h4>정보</h4>}></Route>
+        <Route path="/*" element={<h4>없는 페이지 입니다.</h4>}></Route>
+        <Route
+          path="/event"
+          element={
+            <>
+              <h4>이벤트 페이지</h4>
+              <Link to={"/event/one"}>
+                <p>1</p>
+              </Link>
+              <Link to={"/event/two"}>
+                <p>2</p>
+              </Link>
+              <Outlet></Outlet>
+            </>
+          }
+        >
+          <Route
+            path="one"
+            element={
+              <div>
+                <h4>오늘의 이벤트</h4>
+                <p>첫 주문시 양베추즙 서비스</p>
+              </div>
+            }
+          />
+          <Route
+            path="two"
+            element={
+              <div>
+                <h4>오늘의 이벤트</h4>
+                <p>생일기념 쿠폰받기</p>
+              </div>
+            }
+          />
+        </Route>
+        {/* Nested Routes 활용 */}
+      </Routes>
     </div>
   );
 }
