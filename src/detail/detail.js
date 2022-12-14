@@ -1,20 +1,14 @@
-import { useState } from "react";
-import products from "../product-data";
-
-function DetailPage() {
+function DetailPage(props) {
   return (
     <div className="container">
       <div className="row">
         <div className="col-md-6">
-          <img
-            src="https://codingapple1.github.io/shop/shoes1.jpg"
-            width="100%"
-          />
+          <img src={props.product[0].img} width="100%" />
         </div>
         <div className="col-md-6">
-          <h4 className="pt-5">상품명</h4>
-          <p>상품설명</p>
-          <p>120000원</p>
+          <h4 className="pt-5">{props.product[0].title}</h4>
+          <p>{props.product[0].price}</p>
+          <p>{props.product[0].content}</p>
           <button className="btn btn-danger">주문하기</button>
         </div>
       </div>

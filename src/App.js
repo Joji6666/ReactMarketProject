@@ -3,11 +3,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Button, Navbar, Container, Nav, Row, Col } from "react-bootstrap";
 
 import { useState } from "react";
-import Products from "./products";
 import products from "./product-data";
 import { Routes, Route, Link, useNavigate, Outlet } from "react-router-dom";
-import MainPage from "./main/main";
+
 import DetailPage from "./detail/detail";
+import Products from "./products";
 
 function App() {
   let nav = useNavigate();
@@ -58,9 +58,27 @@ function App() {
           </Nav>
         </Container>
       </Navbar>
+
       <Routes>
-        <Route path="/" element={<MainPage products={products} />}></Route>
-        <Route path="/detail" element={<DetailPage />}></Route>
+        <Route
+          path="/"
+          element={
+            <div>
+              <div className="main-bg"></div>
+              {product.map((a, i) => {
+                return (
+                  <Link to={"/detail"}>
+                    <Products product={product[i]}></Products>
+                  </Link>
+                );
+              })}
+            </div>
+          }
+        />
+        <Route
+          path="/detail"
+          element={<DetailPage product={product} />}
+        ></Route>
         <Route path="/about" element={<h4>정보</h4>}></Route>
         <Route path="/*" element={<h4>없는 페이지 입니다.</h4>}></Route>
         <Route
