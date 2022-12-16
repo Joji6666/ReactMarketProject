@@ -1,7 +1,7 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button, Navbar, Container, Nav, Row, Col } from "react-bootstrap";
-
+import axios from "axios";
 import { useState } from "react";
 import products from "./product-data";
 import { Routes, Route, Link, useNavigate, Outlet } from "react-router-dom";
@@ -12,6 +12,7 @@ import Products from "./products";
 function App() {
   let nav = useNavigate();
   let [product, setProduct] = useState(products);
+  let [btnCount, setBtnCount] = useState(0);
 
   return (
     <div className="App">
@@ -67,16 +68,58 @@ function App() {
               <div className="main-bg"></div>
               {product.map((a, i) => {
                 return (
-                  <Link to={"/detail"}>
+                  <Link to={`/detail/${setProduct.id}`}>
                     <Products product={product[i]}></Products>
                   </Link>
                 );
               })}
+
+              <button
+                onClick={() => {
+                  let 정렬글제목 = [...product];
+                  정렬글제목.sort(function (a, b) {
+                    return a.price - b.price;
+                  });
+                  setProduct(정렬글제목);
+                }}
+              >
+                가격 낮은 순
+              </button>
+              <button
+                onClick={() => {
+                  setBtnCount(btnCount + 1);
+                  console.log(btnCount);
+                  axios
+                    .get("https://codingapple1.github.io/shop/data2.json")
+                    .then((result) => {
+                      let resultData = [...product, ...result.data];
+                      setProduct(resultData); // ...을 이용한 데이터 추가 방법
+
+                      // setProduct(product.concat(result.data));  데이터 추가 방법 1 concat 이용
+                    })
+                    .catch((error) => {
+                      console.error("에러발생");
+                    });
+                }}
+              >
+                더보기
+              </button>
+              {btnCount == 2
+                ? axios
+                    .get("https://codingapple1.github.io/shop/data3.json")
+                    .then((result) => {
+                      let resultData2 = [...product, ...result.data];
+                      setProduct(resultData2);
+                    })
+                    .catch((error) => {
+                      console.error("에러발생");
+                    })
+                : null}
             </div>
           }
         />
         <Route
-          path="/detail"
+          path="/detail/:id"
           element={<DetailPage product={product} />}
         ></Route>
         <Route path="/about" element={<h4>정보</h4>}></Route>
