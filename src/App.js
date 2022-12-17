@@ -2,17 +2,25 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button, Navbar, Container, Nav, Row, Col } from "react-bootstrap";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import products from "./product-data";
 import { Routes, Route, Link, useNavigate, Outlet } from "react-router-dom";
 
 import DetailPage from "./detail/detail";
 import Products from "./products";
+import Cart from "./cart";
 
 function App() {
   let nav = useNavigate();
   let [product, setProduct] = useState(products);
-  let [btnCount, setBtnCount] = useState(0);
+  let [btnCount, setBtnCount] = useState(1);
+
+  useEffect(() => {
+    if (btnCount == 3) {
+      alert("더이상 상품이 없습니다.");
+      setBtnCount((btnCount = null));
+    }
+  });
 
   return (
     <div className="App">
@@ -44,10 +52,10 @@ function App() {
             </Nav.Link>
             <Nav.Link
               onClick={() => {
-                nav("/detail");
+                nav("/cart");
               }}
             >
-              Detail
+              Cart
             </Nav.Link>
             <Nav.Link
               onClick={() => {
@@ -68,7 +76,7 @@ function App() {
               <div className="main-bg"></div>
               {product.map((a, i) => {
                 return (
-                  <Link to={`/detail/${setProduct.id}`}>
+                  <Link to={`/detail/${product.id}`}>
                     <Products product={product[i]}></Products>
                   </Link>
                 );
@@ -95,6 +103,15 @@ function App() {
                       let resultData = [...product, ...result.data];
                       setProduct(resultData); // ...을 이용한 데이터 추가 방법
 
+                      if (btnCount == 2) {
+                        axios
+                          .get("https://codingapple1.github.io/shop/data3.json")
+                          .then((result2) => {
+                            let resultData2 = [...product, ...result2.data];
+                            setProduct(resultData2);
+                          });
+                      }
+
                       // setProduct(product.concat(result.data));  데이터 추가 방법 1 concat 이용
                     })
                     .catch((error) => {
@@ -104,17 +121,6 @@ function App() {
               >
                 더보기
               </button>
-              {btnCount == 2
-                ? axios
-                    .get("https://codingapple1.github.io/shop/data3.json")
-                    .then((result) => {
-                      let resultData2 = [...product, ...result.data];
-                      setProduct(resultData2);
-                    })
-                    .catch((error) => {
-                      console.error("에러발생");
-                    })
-                : null}
             </div>
           }
         />
@@ -159,6 +165,7 @@ function App() {
           />
         </Route>
         {/* Nested Routes 활용 */}
+        <Route path="/cart" element={<Cart />} />
       </Routes>
     </div>
   );
